@@ -10,46 +10,47 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
+  url      = "file:./dev.db"
 }
 
 
 model User {
-  id       Int   @id @default(autoincrement())
-  email    String   @unique
-  name     String
-  password String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                Int               @id @default(autoincrement())
+  email             String            @unique
+  name              String
+  password          String
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
 
-  posts    Post[] @relation("author")
-  profile  Profile? @relation("profile")
+  userAtividades    userAtividades[]  @relation("autor")
 
   @@map("users")
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  title     String
-  content   String
-  published Boolean
-  userId    Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
-  author    User     @relation("author", fields: [userId], references: [id])
 
-  @@map("posts")
-}
-
-model Profile {
+model Atividade {
   id        Int       @id @default(autoincrement())
-  bio       String?
-  userId    Int       @unique
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  titulo    String
+  descricao String
+  data      DateTime  @default(now())
 
-  author      User     @relation("profile", fields: [userId], references: [id])
+  atividadeUser userAtividades[]  @relation("atividade")
 
-  @@map("profiles")
+  @@map("atividade")
 }
+
+
+
+model userAtividades {
+  id_aluno      Int       @unique
+  id_atividade  Int       @unique
+  data          DateTime  @default(now())
+  nota          Decimal
+
+  autor         User      @relation("autor", fields: [id_aluno], references: [id])
+  atividade     Atividade @relation("atividade", fields: [id_aluno], references: [id])
+
+  @@map("userAtividades")
+}
+
