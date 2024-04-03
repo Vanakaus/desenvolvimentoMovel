@@ -11,6 +11,8 @@ export class CreateUserUseCase{
         });
 
         if(userExiste){
+            console.log("\nResposta: ");
+            console.log("Usuário já existe");
             throw new AppError('Usuário já existe');
         }
 
