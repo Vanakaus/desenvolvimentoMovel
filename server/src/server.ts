@@ -2,6 +2,7 @@ import "express-async-errors";
 import express, { NextFunction, Request, Response } from 'express';
 import { routes } from './routes';
 import { AppError } from "./errors/AppErrors";
+import { informativo } from "./middlewares";
 
 
 const app = express();
@@ -38,6 +39,6 @@ app.listen(3000, () => {
 
 
 // Rota para testar o servidor
-app.get('/', (req, res) => {
+app.get('/', informativo, (req, res) => {
   res.send('Hello World');
 });
