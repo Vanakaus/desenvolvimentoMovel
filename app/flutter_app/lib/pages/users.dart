@@ -13,9 +13,9 @@ class MyUsersPage extends StatefulWidget {
 class _MyHomeUserState extends State<MyUsersPage> {
 
    List<Map<String, String>> users = [
-    {"id": "123", "name": "João", "email": "joao@example.com"},
-    {"id": "456", "name": "Maria", "email": "maria@example.com"},
-    {"id": "789", "name": "Pedro", "email": "pedro@example.com"},
+    {"RA": "2012345", "name": "João", "email": "joao@example.com"},
+    {"RA": "2098765", "name": "Maria", "email": "maria@example.com"},
+    {"RA": "1912345", "name": "Pedro", "email": "pedro@example.com"},
   ];
 
 
@@ -58,7 +58,7 @@ class _MyHomeUserState extends State<MyUsersPage> {
 
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pop(context);
+          Navigator.of(context).pushNamed("/newUser");
         },
         tooltip: 'Increment',
         child: const Icon(Icons.refresh),

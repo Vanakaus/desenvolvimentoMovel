@@ -120,7 +120,7 @@ class _newActivityPageState extends State<newActivityPage> {
 
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pop(context);
+          Navigator.of(context).pushNamed("/users");
         },
         tooltip: 'Increment',
         child: const Icon(Icons.refresh),
