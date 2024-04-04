@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/homePage.dart';
+import 'package:flutter_app/pages/newActivity.dart';
+import 'package:flutter_app/pages/newUser.dart';
 import 'package:flutter_app/pages/users.dart';
 
 void main() {
@@ -14,6 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Page',
+      initialRoute: '/homePage',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -31,11 +34,14 @@ class MyApp extends StatelessWidget {
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        scaffoldBackgroundColor: Colors.grey,
         useMaterial3: true,
       ),
       home: const MyHomePage(title: 'Home Page'),
       routes: {
         '/users': (context) => const MyUsersPage(title: 'Users Page'),
+        '/newUser': (context) => const newUserPage(title: 'Users Page'),
+        '/newActivity': (context) => const newActivityPage(title: 'Activity Page'),
       },
     );
   }
