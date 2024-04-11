@@ -1,17 +1,20 @@
 import { Router } from "express";
 import { informativo } from "../middlewares";
 import { CriaAtividadeController } from "../modules/atividades/useCases/criaAtividade/CriaAtividadeController";
+import { ListaAtividadeController } from "../modules/atividades/useCases/listaAtividade/ListaAtividadeController";
 
 
 
 const criaAtividadeController = new CriaAtividadeController();
+const listaAtividadeController = new ListaAtividadeController();
+// const leAtividadeController = new LeAtividadeController();
 const atividadeRoutes = Router();
 
 
 // Rotas de Atividades
 atividadeRoutes.post('/cria', informativo, criaAtividadeController.handle);
-// atividadeRoutes.get('/listAtividade', informativo, listUserController.handle);
-// atividadeRoutes.get('/leAtividade', informativo, listUserController.handle);
+atividadeRoutes.get('/lista', informativo, listaAtividadeController.handle);
+// atividadeRoutes.get('/leAtividade', informativo, leAtividadeController.handle);
 // atividadeRoutes.patch('/atualizaAtividade', informativo, listUserController.handle);
 // atividadeRoutes.delete('/deletaAtividade', informativo, listUserController.handle);
 
