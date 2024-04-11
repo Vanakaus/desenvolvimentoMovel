@@ -17,6 +17,9 @@ export function informativo(req: e.Request, res: e.Response, next: NextFunction)
     console.log(`\nheaders: \n${req.rawHeaders}`);
     console.log(`\nbody: \n${body}`);
 
+    console.log("\nResposta: ");
+
+
     return next();
 }
 

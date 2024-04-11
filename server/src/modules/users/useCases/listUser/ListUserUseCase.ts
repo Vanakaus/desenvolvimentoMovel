@@ -1,20 +1,27 @@
-import { User } from "@prisma/client";
 import { prisma } from "../../../../prisma/client";
-import { CreateUserDTO } from "../../interface/CreateUserDTO";
 import { AppError } from "../../../../errors/AppErrors";
 
 export class ListUserUseCase{
     async execute(): Promise<object[]>{
-        // async execute(): void{
-            console.log("asdasd");
 
-        const users = await prisma.user.findMany();
-        console.log(users);
+        const users = await prisma.user.findMany({
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                criacao: true,
+                Atualizado: true
+            }
+        });
+
 
         if(!users){
             console.log("Sem Usuários cadastrados");
             throw new AppError('Sem Usuários cadastrados');
         }
+
+        console.log("Lista de Usuários:");
+        console.log(users);
         
         return users;
     }

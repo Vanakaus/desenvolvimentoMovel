@@ -11,11 +11,8 @@ const userAtividadeRoutes = Router();
 // userAtividadeRoutes.post('/criaAtividadeUser', informativo, listUserController.handle);
 // userAtividadeRoutes.get('/listAtividadeUser', informativo, listUserController.handle);
 // userAtividadeRoutes.get('/leAtividadeUser', informativo, listUserController.handle);
-// userAtividadeRoutes.get('/leAtividadeUser/:id', informativo, listUserController.handle);
 // userAtividadeRoutes.patch('/atualizaAtividadeUser', informativo, listUserController.handle);
-// userAtividadeRoutes.patch('/atualizaAtividadeUser/:id', informativo, listUserController.handle);
 // userAtividadeRoutes.delete('/deletaAtividadeUser', informativo, listUserController.handle);
-// userAtividadeRoutes.delete('/deletaAtividadeUser/:id', informativo, listUserController.handle);
 
 
 export { userAtividadeRoutes };
