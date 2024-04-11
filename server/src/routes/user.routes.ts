@@ -19,10 +19,10 @@ const userRoutes = Router();
 
 // Rotas de Usuários
 userRoutes.post('/cria', informativo, createUserController.handle);
-userRoutes.get('/listUsers', informativo, listUserController.handle);
-userRoutes.get('/leUser', informativo, leUserController.handle);
-userRoutes.patch('/atualizaUser', informativo, atualizaUserController.handle);
-userRoutes.delete('/deletaUser', informativo, deletaUserController.handle);
+userRoutes.get('/lista', informativo, listUserController.handle);
+userRoutes.get('/le', informativo, leUserController.handle);
+userRoutes.patch('/atualiza', informativo, atualizaUserController.handle);
+userRoutes.delete('/deleta', informativo, deletaUserController.handle);
 
 
 export { userRoutes };

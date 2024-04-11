@@ -4,13 +4,14 @@ import { AppError } from "../../../../errors/AppErrors";
 import { Atividade } from "@prisma/client";
 
 export class CriaAtividadeUseCase{
-    async execute({titulo, descricao}: CriaAtividadeDTO): Promise<Atividade>{
+    async execute({titulo, descricao, data}: CriaAtividadeDTO): Promise<Atividade>{
         
 
         const atividade = await prisma.atividade.create({
             data: {
                 titulo,
-                descricao
+                descricao,
+                data
             }
         });
 
