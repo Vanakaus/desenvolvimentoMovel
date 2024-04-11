@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { informativo } from "../middlewares";
-import { CreateUserController } from "../modules/users/useCases/createUser/CreateUserController";
+import { CreateUserController } from "../modules/users/useCases/criaUser/CreateUserController";
 import { ListUserController } from "../modules/users/useCases/listUser/ListUserController";
 import { LeUserController } from "../modules/users/useCases/leUser/LeUserController";
 import { AtualizaUserController } from "../modules/users/useCases/atualizaUser/AtualizaUserController";
