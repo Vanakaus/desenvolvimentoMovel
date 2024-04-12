@@ -7,13 +7,19 @@ export class DeletaUserUseCase{
         const user = await prisma.user.findUnique({
             where: {
                 id: id
+            },
+            include: {
+                userAtividades: true
             }
         });
 
 
         if(!user){
-            console.log("Usuário não encontrado");
             throw new AppError('Usuário não encontrado', 404);
+        }
+
+        if(user.userAtividades.length > 0){
+            throw new AppError('Usuário possui atividades entregues');
         }
 
         const userDeleted = await prisma.user.delete({

@@ -7,6 +7,9 @@ export class DeletaAtividadeUseCase{
         const atividade = await prisma.atividade.findUnique({
             where: {
                 id: id
+            },
+            include: {
+                atividadeUser: true
             }
         });
 
@@ -14,6 +17,10 @@ export class DeletaAtividadeUseCase{
         if(!atividade){
             console.log("Atividade não encontrada");
             throw new AppError('Atividade não encontrada', 404);
+        }
+
+        if(atividade.atividadeUser.length > 0){
+            throw new AppError('Atividade possui entregas');
         }
 
         const atividadeDeleted = await prisma.atividade.delete({
