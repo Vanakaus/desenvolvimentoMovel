@@ -1,32 +1,32 @@
 import { prisma } from "../../../../prisma/client";
 import { AppError } from "../../../../errors/AppErrors";
 
-export class DeletaUserUseCase{
+export class DeletaAtividadeUseCase{
     async execute(id: number): Promise<Object>{
 
-        const user = await prisma.user.findUnique({
+        const atividade = await prisma.atividade.findUnique({
             where: {
                 id: id
             }
         });
 
 
-        if(!user){
-            console.log("Usuário não encontrado");
-            throw new AppError('Usuário não encontrado', 404);
+        if(!atividade){
+            console.log("Atividade não encontrada");
+            throw new AppError('Atividade não encontrada', 404);
         }
 
-        const userDeleted = await prisma.user.delete({
+        const atividadeDeleted = await prisma.atividade.delete({
             where: {
                 id: id
             }
         });
 
-        console.log("Usuário deletado com sucesso");
+        console.log("Atividade deletada:");
 
         const response = {
             status: "success",
-            message: "Usuário deletado com sucesso",
+            message: "Atividade deletada com sucesso",
         }
 
         return response;

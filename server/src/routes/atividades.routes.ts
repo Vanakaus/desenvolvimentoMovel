@@ -4,6 +4,7 @@ import { CriaAtividadeController } from "../modules/atividades/useCases/criaAtiv
 import { ListaAtividadeController } from "../modules/atividades/useCases/listaAtividade/ListaAtividadeController";
 import { LeAtividadeController } from "../modules/atividades/useCases/leAtividade/LeAtividadeController";
 import { AtualizaAtividadeController } from "../modules/atividades/useCases/atualizaAtividade/AtualizaAtividadeController";
+import { DeletaAtividadeController } from "../modules/atividades/useCases/deletaAtividade/DeletaAtividadeController";
 
 
 
@@ -11,6 +12,7 @@ const criaAtividadeController = new CriaAtividadeController();
 const listaAtividadeController = new ListaAtividadeController();
 const leAtividadeController = new LeAtividadeController();
 const atualizaAtividadeController = new AtualizaAtividadeController();
+const deletaAtividadeController = new DeletaAtividadeController();
 const atividadeRoutes = Router();
 
 
@@ -19,7 +21,7 @@ atividadeRoutes.post('/cria', informativo, criaAtividadeController.handle);
 atividadeRoutes.get('/lista', informativo, listaAtividadeController.handle);
 atividadeRoutes.get('/le', informativo, leAtividadeController.handle);
 atividadeRoutes.patch('/atualiza', informativo, atualizaAtividadeController.handle);
-// atividadeRoutes.delete('/deletaAtividade', informativo, listUserController.handle);
+atividadeRoutes.delete('/deleta', informativo, deletaAtividadeController.handle);
 
 
 
