@@ -1,9 +1,9 @@
 import { Router } from "express";
 import { informativo } from "../middlewares";
-import { CriaUserAtividadeController } from "../modules/atividades copy/useCases/criaUserAtividade/CriaUserAtividadeController";
-import { ListaAtividadesController, ListaUserAtividadeController } from "../modules/atividades copy/useCases/listaUserAtividade/ListaUserAtividadeController";
-import { AtualizaAtividadeEntregaController, AtualizaAtividadeNotaController } from "../modules/atividades copy/useCases/atualizaUserAtividade/AtualizaUserAtividadeController";
-import { DeletaUserAtividadeController } from "../modules/atividades copy/useCases/deletaAtividade/DeletaAtividadeController";
+import { CriaUserAtividadeController } from "../modules/userAtividades/useCases/criaUserAtividade/CriaUserAtividadeController";
+import { ListaAtividadesController, ListaUserAtividadeController } from "../modules/userAtividades/useCases/listaUserAtividade/ListaUserAtividadeController";
+import { AtualizaAtividadeEntregaController, AtualizaAtividadeNotaController } from "../modules/userAtividades/useCases/atualizaUserAtividade/AtualizaUserAtividadeController";
+import { DeletaUserAtividadeController } from "../modules/userAtividades/useCases/deletaAtividade/DeletaAtividadeController";
 
 
 
