@@ -3,12 +3,14 @@ import { informativo } from "../middlewares";
 import { CriaAtividadeController } from "../modules/atividades/useCases/criaAtividade/CriaAtividadeController";
 import { ListaAtividadeController } from "../modules/atividades/useCases/listaAtividade/ListaAtividadeController";
 import { LeAtividadeController } from "../modules/atividades/useCases/leAtividade/LeAtividadeController";
+import { AtualizaAtividadeController } from "../modules/atividades/useCases/atualizaAtividade/AtualizaAtividadeController";
 
 
 
 const criaAtividadeController = new CriaAtividadeController();
 const listaAtividadeController = new ListaAtividadeController();
 const leAtividadeController = new LeAtividadeController();
+const atualizaAtividadeController = new AtualizaAtividadeController();
 const atividadeRoutes = Router();
 
 
@@ -16,7 +18,7 @@ const atividadeRoutes = Router();
 atividadeRoutes.post('/cria', informativo, criaAtividadeController.handle);
 atividadeRoutes.get('/lista', informativo, listaAtividadeController.handle);
 atividadeRoutes.get('/le', informativo, leAtividadeController.handle);
-// atividadeRoutes.patch('/atualizaAtividade', informativo, listUserController.handle);
+atividadeRoutes.patch('/atualiza', informativo, atualizaAtividadeController.handle);
 // atividadeRoutes.delete('/deletaAtividade', informativo, listUserController.handle);
 
 
