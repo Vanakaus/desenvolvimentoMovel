@@ -9,7 +9,7 @@ export class ListaAtividadeUseCase{
                 id: true,
                 titulo: true,
                 descricao: true,
-                dataLimite: true
+                data: true
             }
         });
 

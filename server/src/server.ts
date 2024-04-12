@@ -15,7 +15,7 @@ app.use(routes);
 // Função para tratar erros e mostra-lo de forma mais amigável
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   if(err instanceof AppError){
-    console.log('Erro:');
+    console.log('\nErro:');
     console.log(err.message);
 
     return res.status(err.statusCode).json({
@@ -24,7 +24,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     });
   }
 
-  console.log('Erro:');
+  console.log('\nErro:');
   console.log(err.message);
 
   return res.status(500).json({
