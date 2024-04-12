@@ -2,12 +2,16 @@ import { Router } from "express";
 import { informativo } from "../middlewares";
 import { CriaUserAtividadeController } from "../modules/atividades copy/useCases/criaUserAtividade/CriaUserAtividadeController";
 import { ListaAtividadesController, ListaUserAtividadeController } from "../modules/atividades copy/useCases/listaUserAtividade/ListaUserAtividadeController";
+import { AtualizaAtividadeEntregaController, AtualizaAtividadeNotaController } from "../modules/atividades copy/useCases/atualizaUserAtividade/AtualizaUserAtividadeController";
 
 
 
 const criaUserAtividadeController  = new CriaUserAtividadeController();
 const listaUserAtividadeController = new ListaUserAtividadeController();
 const listaAtividadesController = new ListaAtividadesController();
+const atualizaAtividadeEntregaController = new AtualizaAtividadeEntregaController();
+const atualizaAtividadeNotaController = new AtualizaAtividadeNotaController();
+const deletaUserAtividadeController = new DeletaUserAtividadeController();
 const userAtividadeRoutes = Router();
 
 
@@ -15,9 +19,9 @@ const userAtividadeRoutes = Router();
 userAtividadeRoutes.post('/cria', informativo, criaUserAtividadeController.handle);
 userAtividadeRoutes.get('/listaUserAtividades', informativo, listaUserAtividadeController.handle);
 userAtividadeRoutes.get('/listaAtividades', informativo, listaAtividadesController.handle);
-// userAtividadeRoutes.get('/leAtividadeUser', informativo, listUserController.handle);
-// userAtividadeRoutes.patch('/atualizaAtividadeUser', informativo, listUserController.handle);
-// userAtividadeRoutes.delete('/deletaAtividadeUser', informativo, listUserController.handle);
+userAtividadeRoutes.patch('/atualizaEntrega', informativo, atualizaAtividadeEntregaController.handle);
+userAtividadeRoutes.patch('/atualizaNota', informativo, atualizaAtividadeNotaController.handle);
+userAtividadeRoutes.delete('/deleta', informativo, deletaUserAtividadeController.handle);
 
 
 export { userAtividadeRoutes };
