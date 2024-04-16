@@ -18,7 +18,7 @@ const userAtividadeRoutes = Router();
 
 
 // Rotas de atividades do usuário
-userAtividadeRoutes.post('/cria', informativo, criaUserAtividadeController.handle);
+userAtividadeRoutes.post('/entrega', informativo, criaUserAtividadeController.handle);
 userAtividadeRoutes.get('/listaUserAtividades', informativo, listaUserAtividadeController.handle);
 userAtividadeRoutes.get('/listaAtividades', informativo, listaAtividadesController.handle);
 userAtividadeRoutes.get('/listaAtividadesNaoEntregues', informativo, listaUserAtividadeNaoEntregueController.handle);

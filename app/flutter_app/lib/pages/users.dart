@@ -23,7 +23,7 @@ class _MyHomeUserState extends State<MyUsersPage> {
 
   // Lista de atividades nao enviadas
   List<Map<String, String>> atividades = [
-    {"id": "", "nome": ""}
+    {"id": "", "titulo": ""}
   ];
   String _selectedValue = '';
 
@@ -81,14 +81,12 @@ class _MyHomeUserState extends State<MyUsersPage> {
                         IconButton(
                           icon: const Icon(Icons.send),
                           onPressed: () {
-                            print('Enviar atividade ${item["RA"]}');
-                            _showEnviaAtividadeDialog(context);
+                            getAtividadesNaoEnviadas(context, item["RA"]!);
                           },
                         ),
                         IconButton(
                           icon: const Icon(Icons.edit),
                           onPressed: () {
-                            print('Editar usuário ${item["RA"]}');
                             _showAddUserDialog(context, item["RA"]!, item["email"]!);
                           },
                         ),
@@ -207,7 +205,7 @@ class _MyHomeUserState extends State<MyUsersPage> {
 
 
   // Função para abrir o pop-up de envio de atividade
-  void _showEnviaAtividadeDialog(BuildContext context) {
+  void _showEnviaAtividadeDialog(BuildContext context, int id) {
     _selectedValue = atividades[0]['id']!;
     showDialog(
       context: context,
@@ -226,7 +224,7 @@ class _MyHomeUserState extends State<MyUsersPage> {
                 items: atividades.map((item) {
                   return DropdownMenuItem<String>(
                     value: item['id']!,
-                    child: Text(item['nome']!),
+                    child: Text(item['titulo']!),
                   );
                 }).toList(),
               );
@@ -242,10 +240,9 @@ class _MyHomeUserState extends State<MyUsersPage> {
             ),
             TextButton(
               onPressed: () {
-                // Imprimir o ID do valor selecionado no console
                 int selectedIndex = atividades.indexWhere((element) => element['id'] == _selectedValue);
-                print('ID do valor selecionado: $selectedIndex');
-                // Fechar o pop-up
+                entregaAtividade(id, int.parse(atividades[selectedIndex]['id']!));
+
                 Navigator.of(context).pop();
               },
               child: const Text('Selecionar'),
@@ -279,12 +276,6 @@ class _MyHomeUserState extends State<MyUsersPage> {
 
   // Função para editar um usuário
   Future<void> editarUser(String item, String email, String password, String confirmPassword) async {
-    print('Editar usuário $item');
-    
-    // Imprimir os valores no console
-    print('E-mail: $email');
-    print('Senha: $password');
-    print('Confirmar Senha: $confirmPassword');
 
     final id = int.parse(item);
 
@@ -325,7 +316,6 @@ class _MyHomeUserState extends State<MyUsersPage> {
 
   // Função para excluir um usuário
   Future<void> excluirUser(String item) async {
-    print('Editar usuário $item');
 
     final id = int.parse(item);
 
@@ -358,5 +348,61 @@ class _MyHomeUserState extends State<MyUsersPage> {
 
     // Atualizar a lista de usuários
     getUsers();
+  }
+
+
+
+  // Função para pegar as atividades não enviadas 
+  void getAtividadesNaoEnviadas(BuildContext context, String item) async {
+
+    final id = int.parse(item);
+
+    // Enviar requisição para a API com query string
+    final response = await http.get(Uri.parse('http://localhost:3000/userAtividades/listaAtividadesNaoEntregues?id_aluno=$id'));
+
+    // Limpar a lista de atividades e adicionar as atividades da API
+    atividades = [
+      {"id": "", "titulo": ""}
+    ];
+    json.decode(response.body).forEach((element) {
+      atividades.add({
+        "id": element["id"].toString(),
+        "titulo": element["titulo"]
+      });
+    });
+
+    // Atualizar a variável atividades
+    setState(() {
+      atividades;
+    });
+
+    // Chamar a função para abrir o pop-up de envio de atividade
+    _showEnviaAtividadeDialog(context, id);
+  }
+  
+
+
+  // Função para entregar uma atividade
+  void entregaAtividade(int idAluno, int idAtividade) {
+
+    // Enviar requisição para a API com json
+    http.post(Uri.parse('http://localhost:3000/userAtividades/entrega'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    // converter o item para int
+    body: json.encode({
+      "id_aluno": idAluno,
+      "id_atividade": idAtividade
+    }));
+    
+
+    // Mostrar mensagem de retorno como um alerta
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Atividade entregue com sucesso'),
+        duration: Duration(seconds: 4),
+      ),
+    );
   }
 }

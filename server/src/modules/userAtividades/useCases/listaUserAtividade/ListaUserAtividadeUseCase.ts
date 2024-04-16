@@ -50,6 +50,9 @@ export class ListaUserAtividadeNaoEntregueUseCase{
           );
         });
 
+        console.log("Lista de Atividades não entregues:");
+        console.log(atividadesNaoEntregues);
+
         return atividadesNaoEntregues;
     }
 }
