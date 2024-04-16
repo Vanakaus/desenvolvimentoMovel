@@ -69,6 +69,12 @@ class _MyHomeUserState extends State<MyUsersPage> {
                     Row(
                       children: [
                         IconButton(
+                          icon: const Icon(Icons.send),
+                          onPressed: () {
+                            print('Enviar atividade ${item["RA"]}');
+                          },
+                        ),
+                        IconButton(
                           icon: const Icon(Icons.edit),
                           onPressed: () {
                             print('Editar usuário ${item["RA"]}');

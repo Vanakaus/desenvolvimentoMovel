@@ -109,7 +109,7 @@ class _newActivityPageState extends State<newActivityPage> {
                         print('Activity Deadline: $activityDeadline');
                       }
                     },
-                    child: const Text('Submit Activity'),
+                    child: const Text('Criar Atividade'),
                   ),
                 ],
               ),
