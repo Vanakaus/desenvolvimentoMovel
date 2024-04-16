@@ -83,7 +83,7 @@ class _MyHomeUserState extends State<MyUsersPage> {
                         IconButton(
                           icon: const Icon(Icons.delete),
                           onPressed: () {
-                            print('Deletar usuário ${item["RA"]}');
+                            excluirUser(item["RA"]!);
                           },
                         ),
                       ],
@@ -99,10 +99,10 @@ class _MyHomeUserState extends State<MyUsersPage> {
           
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            getUsers();
+            print('Adicionar Aluno');
           },
-          tooltip: 'Refresh',
-          child: const Icon(Icons.refresh),
+          tooltip: 'Adicionar Aluno',
+          child: const Icon(Icons.add),
         ),
       )
     );
@@ -133,5 +133,42 @@ class _MyHomeUserState extends State<MyUsersPage> {
     setState(() {
       users;
     });
+  }
+  
+
+  Future<void> excluirUser(String item) async {
+    print('Editar usuário $item');
+
+    final id = int.parse(item);
+
+    // Enviar requisição para a API com json
+    final response = await http.delete(Uri.parse('http://localhost:3000/users/deleta'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    // converter o item para int
+    body: json.encode({
+      "id": id
+    }));
+
+    // Criar a mensagem de retorno
+    var mensagem = '';
+
+    if (response.statusCode == 400) {
+      mensagem = 'Erro Interno';
+    } else {
+      mensagem = 'Usuário excluído com sucesso';
+    }
+
+    // Mostrar mensagem de retorno como um alerta
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(mensagem),
+        duration: const Duration(seconds: 4),
+      ),
+    );
+
+    // Atualizar a lista de usuários
+    getUsers();
   }
 }

@@ -4,6 +4,10 @@ import { AppError } from "../../../../errors/AppErrors";
 export class DeletaUserUseCase{
     async execute(id: number): Promise<Object>{
 
+        if(!id){
+            throw new AppError('ID não informado', 400);
+        }
+
         const user = await prisma.user.findUnique({
             where: {
                 id: id
