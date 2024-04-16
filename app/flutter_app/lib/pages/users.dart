@@ -18,7 +18,7 @@ class _MyHomeUserState extends State<MyUsersPage> {
   
   // Lista de usuários fictícia
   List<Map<String, String>> users = [
-    {"RA": "", "name": "", "email": ""},
+    {"RA": "", "nome": "", "email": ""},
   ];
 
 
@@ -34,11 +34,21 @@ class _MyHomeUserState extends State<MyUsersPage> {
           child: Container(
             padding: const EdgeInsets.all(30.0),
             width: 800,
+            height: 500,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10.0),
               color: Colors.white
             ),
-            child: DataTable(
+            child: Column(
+              children: [
+                const Text(
+                  "Lista de Usuários",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold
+                  )
+                ),
+                 DataTable(
               headingTextStyle: const TextStyle(
                 fontSize: 16.0,
                 fontWeight: FontWeight.bold,
@@ -47,14 +57,14 @@ class _MyHomeUserState extends State<MyUsersPage> {
               ),
               columns: [
                 ...users.first.keys
-                .map((key) => DataColumn(label: Text(key.toUpperCase()))).toList(),
-                DataColumn(label: const Text('Ações'))
+                .map((key) => DataColumn(label: Text(key.toUpperCase()))),
+                const DataColumn(label: Text('Ações'))
               ],
                 rows: users.map((item) => DataRow(
                 cells: [
                   ...item.keys
                   .map((key) => DataCell(Text(item[key].toString())))
-                  .toList(),
+                  ,
                   DataCell(
                     Row(
                       children: [
@@ -75,7 +85,8 @@ class _MyHomeUserState extends State<MyUsersPage> {
                   )
                 ],
               )).toList(),
-            ),
+            ),]
+            )
           ),
         ),
 
@@ -108,7 +119,7 @@ class _MyHomeUserState extends State<MyUsersPage> {
     json.decode(response.body).forEach((element) {
       users.add({
         "RA": element["id"].toString(),
-        "name": element["name"],
+        "nome": element["name"],
         "email": element["email"]
       });
     });

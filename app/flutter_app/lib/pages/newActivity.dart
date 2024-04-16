@@ -21,7 +21,10 @@ class _newActivityPageState extends State<newActivityPage> {
     final formKeyActivity = GlobalKey<FormState>();
     late String activityName;
     late String activityDescription;
-    late DateTime activityDeadline = DateTime.now();
+
+    // Inicializa a data de entrega da atividade com uma semana a partir da data atual
+    late DateTime activityDeadline = DateTime.now().add(const Duration(days: 7));
+
 
     Future<void> selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -55,21 +58,26 @@ class _newActivityPageState extends State<newActivityPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  const Text(
+                      "Nova Atividade",
+                      style: TextStyle(fontSize: 20,
+                      fontWeight: FontWeight.bold)
+                    ),
                   TextFormField(
-                    decoration: const InputDecoration(labelText: 'Activity Name'),
+                    decoration: const InputDecoration(labelText: 'Titulo da Atividade'),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter the activity name';
+                        return 'Escreva o titulo da atividade';
                       }
                       return null;
                     },
                     onSaved: (value) => activityName = value!,
                   ),
                   TextFormField(
-                    decoration: const InputDecoration(labelText: 'Activity Description'),
+                    decoration: const InputDecoration(labelText: 'Descrição da Atividade'),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter the activity description';
+                        return 'Escreva a descrição da atividade';
                       }
                       return null;
                     },
@@ -78,7 +86,7 @@ class _newActivityPageState extends State<newActivityPage> {
                   
                   Row(
                     children: [
-                      const Text('Activity Deadline:'),
+                      const Text('Data de Entrega:'),
                       const SizedBox(width: 10),
                       TextButton(
                         onPressed: () => selectDate(context),
