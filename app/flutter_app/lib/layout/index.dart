@@ -8,6 +8,8 @@ class CommonLayout extends StatelessWidget {
   final BuildContext context;
   final Scaffold body;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+  
+  int currentIndex = 0;
 
 
   CommonLayout({
@@ -15,6 +17,7 @@ class CommonLayout extends StatelessWidget {
     required this.pageTitle,
     required this.context,
     required this.body,
+    this.currentIndex = 0
   });
 
   
@@ -52,24 +55,31 @@ class CommonLayout extends StatelessWidget {
             icon: Icon(Icons.person_add),
             label: 'Novo Aluno',
           ),
-          // BottomNavigationBarItem(
-          //   icon: Icon(Icons.assignment),
-          //   label: 'Atividades',
-          // ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.assignment),
+            label: 'Atividades',
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.assignment_turned_in),
             label: 'Nova Atividade',
           ),
         ],
-        currentIndex: pages.indexWhere((element) => element['route'] == ModalRoute.of(context)!.settings.name),
+        selectedItemColor: Theme.of(context).colorScheme.primary,
+        unselectedItemColor: Theme.of(context).colorScheme.secondary,
+        currentIndex: pages.indexWhere((element) => element['route'] == ModalRoute.of(context)!.settings.name) == -1 ?
+                        0
+                        : 
+                        pages.indexWhere((element) => element['route'] == ModalRoute.of(context)!.settings.name),
         onTap: _onItemTapped,
       ),
     );
   }
 
   
+
   // Função para navegar entre as páginas
   void _onItemTapped(int index) {
+    // Verifica se o índice da página atual é diferente do índice da página selecionada
     if (pages[index]['route'] != ModalRoute.of(context)!.settings.name) {
       Navigator.of(context).pushNamed(pages[index]['route']!);
     }
