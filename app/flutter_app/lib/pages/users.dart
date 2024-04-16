@@ -45,12 +45,35 @@ class _MyHomeUserState extends State<MyUsersPage> {
                 color: Colors.black,
                 fontFamily: 'Inter',
               ),
-              columns: users.first.keys
-              .map((key) => DataColumn(label: Text(key.toUpperCase()))).toList(),
-              rows: users.map((item) => DataRow(
-                cells: item.keys
-                .map((key) => DataCell(Text(item[key].toString())))
-                .toList(),
+              columns: [
+                ...users.first.keys
+                .map((key) => DataColumn(label: Text(key.toUpperCase()))).toList(),
+                DataColumn(label: const Text('Ações'))
+              ],
+                rows: users.map((item) => DataRow(
+                cells: [
+                  ...item.keys
+                  .map((key) => DataCell(Text(item[key].toString())))
+                  .toList(),
+                  DataCell(
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.edit),
+                          onPressed: () {
+                            print('Editar usuário ${item["RA"]}');
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () {
+                            print('Deletar usuário ${item["RA"]}');
+                          },
+                        ),
+                      ],
+                    ),
+                  )
+                ],
               )).toList(),
             ),
           ),
