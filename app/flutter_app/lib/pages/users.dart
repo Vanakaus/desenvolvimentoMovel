@@ -22,6 +22,9 @@ class _MyHomeUserState extends State<MyUsersPage> {
   ];
 
 
+    final _formKey = GlobalKey<FormState>();
+
+
   // Build da página
   @override
   Widget build(BuildContext context) {
@@ -78,6 +81,7 @@ class _MyHomeUserState extends State<MyUsersPage> {
                           icon: const Icon(Icons.edit),
                           onPressed: () {
                             print('Editar usuário ${item["RA"]}');
+                            _showAddUserDialog(context, item["RA"]!, item["email"]!);
                           },
                         ),
                         IconButton(
@@ -117,6 +121,83 @@ class _MyHomeUserState extends State<MyUsersPage> {
   }
 
 
+// Função para abrir o pop-up
+  void _showAddUserDialog(BuildContext context, String id, String email) {
+    final TextEditingController emailController = TextEditingController();
+    final TextEditingController passwordController = TextEditingController();
+    final TextEditingController confirmPasswordController =
+        TextEditingController();
+
+    emailController.text = email;
+
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Editar Usuário'),
+          content: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: emailController,
+                  decoration: const InputDecoration(labelText: 'E-mail'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Escreva seu email';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: passwordController,
+                  obscureText: true,
+                  decoration: const InputDecoration(labelText: 'Senha'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Cria uma senha';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: confirmPasswordController,
+                  obscureText: true,
+                  decoration: const InputDecoration(labelText: 'Confirmar Senha'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Confirme sua senha';
+                    }
+                    if (value != passwordController.text) {
+                      return 'As senhas não são iguais';
+                    }
+                    return null;
+                  },
+                ),
+                TextButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      editarUser(id,
+                                emailController.text,
+                                passwordController.text,
+                                confirmPasswordController.text);
+                      // Fechar o pop-up
+                      Navigator.of(context).pop();
+                  }},
+                  child: const Text('Atualizar'),
+                ),
+              ],
+            )
+          )
+        );
+      },
+    );
+  }
+
+
+
   // Função para pegar os usuários da API
   Future<void> getUsers() async {
     final response = await http.get(Uri.parse('http://localhost:3000/users/lista'));
@@ -134,8 +215,55 @@ class _MyHomeUserState extends State<MyUsersPage> {
       users;
     });
   }
+
+
+  // Função para editar um usuário
+  Future<void> editarUser(String item, String email, String password, String confirmPassword) async {
+    print('Editar usuário $item');
+    
+    // Imprimir os valores no console
+    print('E-mail: $email');
+    print('Senha: $password');
+    print('Confirmar Senha: $confirmPassword');
+
+    final id = int.parse(item);
+
+    // Enviar requisição para a API com json
+    final response = await http.patch(Uri.parse('http://localhost:3000/users/atualiza'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    // converter o item para int
+    body: json.encode({
+      "id": id,
+      "email": email,
+      "senha": password
+    }));
+
+    // Criar a mensagem de retorno
+    var mensagem = '';
+
+    if (response.statusCode == 400) {
+      mensagem = 'Erro Interno';
+    } else {
+      mensagem = 'Usuário atualizado com sucesso';
+    }
+
+    // Mostrar mensagem de retorno como um alerta
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(mensagem),
+        duration: const Duration(seconds: 4),
+      ),
+    );
+
+    // Atualizar a lista de usuários
+    getUsers();
+  }
+
   
 
+  // Função para excluir um usuário
   Future<void> excluirUser(String item) async {
     print('Editar usuário $item');
 
