@@ -21,8 +21,15 @@ class _MyHomeUserState extends State<MyUsersPage> {
     {"RA": "", "nome": "", "email": ""},
   ];
 
+  // Lista de atividades nao enviadas
+  List<Map<String, String>> atividades = [
+    {"id": "", "nome": ""}
+  ];
+  String _selectedValue = '';
 
-    final _formKey = GlobalKey<FormState>();
+
+
+  final _formKey = GlobalKey<FormState>();
 
 
   // Build da página
@@ -75,6 +82,7 @@ class _MyHomeUserState extends State<MyUsersPage> {
                           icon: const Icon(Icons.send),
                           onPressed: () {
                             print('Enviar atividade ${item["RA"]}');
+                            _showEnviaAtividadeDialog(context);
                           },
                         ),
                         IconButton(
@@ -121,7 +129,7 @@ class _MyHomeUserState extends State<MyUsersPage> {
   }
 
 
-// Função para abrir o pop-up
+// Função para abrir o pop-up de atualização de usuário
   void _showAddUserDialog(BuildContext context, String id, String email) {
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
@@ -191,6 +199,58 @@ class _MyHomeUserState extends State<MyUsersPage> {
               ],
             )
           )
+        );
+      },
+    );
+  }
+
+
+
+  // Função para abrir o pop-up de envio de atividade
+  void _showEnviaAtividadeDialog(BuildContext context) {
+    _selectedValue = atividades[0]['id']!;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Selecione uma opção'),
+          content: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return DropdownButton<String>(
+                value: _selectedValue,
+                onChanged: (String? value) {
+                  setState(() {
+                    _selectedValue = value!;
+                  });
+                },
+                items: atividades.map((item) {
+                  return DropdownMenuItem<String>(
+                    value: item['id']!,
+                    child: Text(item['nome']!),
+                  );
+                }).toList(),
+              );
+            },
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                // Fechar o pop-up
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () {
+                // Imprimir o ID do valor selecionado no console
+                int selectedIndex = atividades.indexWhere((element) => element['id'] == _selectedValue);
+                print('ID do valor selecionado: $selectedIndex');
+                // Fechar o pop-up
+                Navigator.of(context).pop();
+              },
+              child: const Text('Selecionar'),
+            ),
+          ],
         );
       },
     );

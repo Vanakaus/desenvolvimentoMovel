@@ -101,7 +101,7 @@ class CommonLayout extends StatelessWidget {
   void _onItemTapped(int newIndex) {
 
     var currentIndex = pages.indexWhere((element) => element['route'] == ModalRoute.of(context)!.settings.name);
-    if (int.parse(pages[currentIndex]['index']!) != newIndex) {
+    if (currentIndex== -1 || int.parse(pages[currentIndex]['index']!) != newIndex) {
       Navigator.of(context).pushNamed(urls[newIndex]['route']!);
     }
   }
