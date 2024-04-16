@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import { ListaAtividadesUseCase, ListaUserAtividadeUseCase } from "./ListaUserAtividadeUseCase"
+import { ListaAtividadesUseCase, ListaUserAtividadeNaoEntregueUseCase, ListaUserAtividadeUseCase } from "./ListaUserAtividadeUseCase"
 
 export class ListaUserAtividadeController {
     async handle(req: Request, res: Response) {
@@ -8,6 +8,17 @@ export class ListaUserAtividadeController {
         const { id_aluno } = req.query
         
         const result = await listaUserAtividadeUseCase.execute(Number(id_aluno))
+        return res.status(201).json(result)
+    }
+}
+
+export class ListaUserAtividadeNaoEntregueController {
+    async handle(req: Request, res: Response) {
+        
+        const listaUserAtividadeNaoEntregueUseCase = new ListaUserAtividadeNaoEntregueUseCase()
+        const { id_aluno } = req.query
+        
+        const result = await listaUserAtividadeNaoEntregueUseCase.execute(Number(id_aluno))
         return res.status(201).json(result)
     }
 }

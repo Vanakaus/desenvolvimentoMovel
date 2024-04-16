@@ -25,6 +25,35 @@ export class ListaUserAtividadeUseCase{
     }
 }
 
+
+export class ListaUserAtividadeNaoEntregueUseCase{
+    async execute(id_aluno: number): Promise<object[]>{
+
+        // Buscar todas as atividades entregues pelo aluno
+        const atividadesEntregues = await prisma.userAtividades.findMany({
+            where: {
+                id_aluno: id_aluno
+            },
+            select: {
+                id_atividade: true
+            }
+        });
+
+        // Buscar todas as atividades cadastradas
+        const todasAtividades = await prisma.atividade.findMany();
+
+        
+        // Filtrar as atividades não entregues
+        const atividadesNaoEntregues = todasAtividades.filter((atividade) => {
+          return !atividadesEntregues.some(
+            (userAtividades) => userAtividades.id_atividade === atividade.id
+          );
+        });
+
+        return atividadesNaoEntregues;
+    }
+}
+
 export class ListaAtividadesUseCase{
     async execute(id_atividade: number): Promise<object[]>{
 
