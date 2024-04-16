@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/layout/index.dart';
 
 
 class newActivityPage extends StatefulWidget {
@@ -10,50 +11,47 @@ class newActivityPage extends StatefulWidget {
   State<newActivityPage> createState() => _newActivityPageState();
 }
 
-class _newActivityPageState extends State<newActivityPage> {
 
+class _newActivityPageState extends State<newActivityPage> {
 
   @override
   Widget build(BuildContext context) {
 
 
-    final _formKeyActivity = GlobalKey<FormState>();
-    late String _activityName;
-    late String _activityDescription;
-    late DateTime _activityDeadline = DateTime.now();
+    final formKeyActivity = GlobalKey<FormState>();
+    late String activityName;
+    late String activityDescription;
+    late DateTime activityDeadline = DateTime.now();
 
-    Future<void> _selectDate(BuildContext context) async {
+    Future<void> selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: _activityDeadline,
+      initialDate: activityDeadline,
       firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
+      lastDate: DateTime(2100),
     );
-    if (pickedDate != null && pickedDate != _activityDeadline) {
+    if (pickedDate != null && pickedDate != activityDeadline) {
       setState(() {
-        _activityDeadline = pickedDate;
+        activityDeadline = pickedDate;
       });
     }
   }
 
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
+  return CommonLayout(
+    pageTitle: widget.title,
+    context: context,
+    body: Scaffold(
       body: Center(
-
         child: Container(
           padding: const EdgeInsets.all(30.0),
           width: 600,
           height: 400,
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.0), color: Colors.white),
-
-        child:
+            borderRadius: BorderRadius.circular(10.0), color: Colors.white),
+          child:
             Form(
-              key: _formKeyActivity,
+              key: formKeyActivity,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -65,7 +63,7 @@ class _newActivityPageState extends State<newActivityPage> {
                       }
                       return null;
                     },
-                    onSaved: (value) => _activityName = value!,
+                    onSaved: (value) => activityName = value!,
                   ),
                   TextFormField(
                     decoration: const InputDecoration(labelText: 'Activity Description'),
@@ -75,38 +73,32 @@ class _newActivityPageState extends State<newActivityPage> {
                       }
                       return null;
                     },
-                    onSaved: (value) => _activityDescription = value!,
+                    onSaved: (value) => activityDescription = value!,
                   ),
                   
-                  
-
                   Row(
                     children: [
                       const Text('Activity Deadline:'),
                       const SizedBox(width: 10),
                       TextButton(
-                        onPressed: () => _selectDate(context),
+                        onPressed: () => selectDate(context),
                         child: Text(
-                          '${_activityDeadline.day}/${_activityDeadline.month}/${_activityDeadline.year}',
+                          '${activityDeadline.day}/${activityDeadline.month}/${activityDeadline.year}',
                         ),
                       ),
                     ],
                   ),
 
-
-
-
-
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
-                      if (_formKeyActivity.currentState!.validate()) {
-                        _formKeyActivity.currentState!.save();
+                      if (formKeyActivity.currentState!.validate()) {
+                        formKeyActivity.currentState!.save();
                         // Here you can add the new activity to your list or perform other actions
                         // For now, let's just print the data
-                        print('Activity Name: $_activityName');
-                        print('Activity Description: $_activityDescription');
-                        print('Activity Deadline: $_activityDeadline');
+                        print('Activity Name: $activityName');
+                        print('Activity Description: $activityDescription');
+                        print('Activity Deadline: $activityDeadline');
                       }
                     },
                     child: const Text('Submit Activity'),
@@ -125,6 +117,7 @@ class _newActivityPageState extends State<newActivityPage> {
         tooltip: 'Increment',
         child: const Icon(Icons.refresh),
       ),
+      )
     );
   }
 }

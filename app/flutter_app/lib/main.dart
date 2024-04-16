@@ -39,9 +39,9 @@ class MyApp extends StatelessWidget {
       ),
       home: const MyHomePage(title: 'Home Page'),
       routes: {
-        '/users': (context) => const MyUsersPage(title: 'Users Page'),
-        '/newUser': (context) => const newUserPage(title: 'Users Page'),
-        '/newActivity': (context) => const newActivityPage(title: 'Activity Page'),
+        '/users': (context) => const MyUsersPage(title: 'Usuários'),
+        '/newUser': (context) => const newUserPage(title: 'Novo Usuário'),
+        '/newActivity': (context) => const newActivityPage(title: 'Nova Atividade'),
       },
     );
   }
