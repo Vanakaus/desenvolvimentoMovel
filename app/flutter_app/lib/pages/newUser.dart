@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app/layout/index.dart';
+import 'package:http/http.dart' as http;
 
 
 
@@ -105,12 +108,7 @@ class _newUserPageState extends State<newUserPage> {
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           _formKey.currentState!.save();
-                          // Aqui você pode adicionar o novo usuário à lista ou realizar outras ações
-                          // por enquanto, vamos apenas imprimir os dados no console do navegador
-                          print('Nome: $_name');
-                          print('Email: $_email');
-                          print('Senha: $_password');
-                          print('Confirmação de senha: $_confirmPassword');
+                          createNewUser(_name, _email, _password, _confirmPassword);
                         }
                       },
                       child: const Text('Cadastrar'),
@@ -131,6 +129,48 @@ class _newUserPageState extends State<newUserPage> {
           tooltip: 'Usuarios',
           child: const Icon(Icons.group),
         ),
+      ),
+    );
+  }
+  
+  Future<void> createNewUser(String name, String email, String password, String confirmPassword) async {
+    
+    // Verifica se as senhas são iguais
+    if (password != confirmPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('As senhas não são iguais'),
+        ),
+      );
+      return;
+    }
+
+    // Enviar requisição para a API
+    final response = await http.post(Uri.parse('http://localhost:3000/users/cria'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    // converter o item para int
+    body: json.encode({
+      'name': name,
+      'email': email,
+      'senha': password
+    }));
+
+    // Criar a mensagem de retorno
+    var mensagem = '';
+
+    if (response.statusCode == 400) {
+      mensagem = 'Erro Interno';
+    } else {
+      mensagem = 'Usuário cadastrado com sucesso';
+    }
+
+    // Mostrar mensagem de retorno como um alerta
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(mensagem),
+        duration: const Duration(seconds: 4),
       ),
     );
   }
