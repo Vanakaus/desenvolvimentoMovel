@@ -24,10 +24,20 @@ class CommonLayout extends StatelessWidget {
 
 // Lista de páginas
   final List<Map<String, String>> pages = [
+    // Paginas de aluos
+    {'index': '0', 'route': '/users'},
+    {'index': '0', 'route': '/newUser'},
+
+    // Paginas de atividades
+    // {'index': '1', 'route': '/activitys'},
+    {'index': '1', 'route': '/newActivity'},
+  ];
+
+
+// Lista de navegacao
+  final List<Map<String, String>> urls = [
     {'title': 'Alunos', 'route': '/users'},
-    {'title': 'Novo Aluno', 'route': '/newUser'},
     {'title': 'Atividades', 'route': '/newActivity'},
-    {'title': 'Nova Atividade', 'route': '/newActivity'},
   ];
 
 
@@ -39,7 +49,13 @@ class CommonLayout extends StatelessWidget {
       key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(pageTitle),
+        title: Text(
+          pageTitle,
+          style: const TextStyle(
+            fontSize: 36,
+            fontWeight: FontWeight.bold,
+          )
+        ),
         centerTitle: true,
         automaticallyImplyLeading: false
       ),
@@ -51,26 +67,30 @@ class CommonLayout extends StatelessWidget {
             icon: Icon(Icons.person),
             label: 'Alunos',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_add),
-            label: 'Novo Aluno',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.person_add),
+          //   label: 'Novo Aluno',
+          // ),
           BottomNavigationBarItem(
             icon: Icon(Icons.assignment),
             label: 'Atividades',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.assignment_turned_in),
-            label: 'Nova Atividade',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.assignment_turned_in),
+          //   label: 'Nova Atividade',
+          // ),
         ],
-        selectedItemColor: Theme.of(context).colorScheme.primary,
+        selectedItemColor: pages.indexWhere((element) => element['route'] == ModalRoute.of(context)!.settings.name) == -1 ?
+                            Theme.of(context).colorScheme.secondary :
+                            Theme.of(context).colorScheme.primary,
+
         unselectedItemColor: Theme.of(context).colorScheme.secondary,
+
         currentIndex: pages.indexWhere((element) => element['route'] == ModalRoute.of(context)!.settings.name) == -1 ?
-                        0
-                        : 
-                        pages.indexWhere((element) => element['route'] == ModalRoute.of(context)!.settings.name),
+                        0 :
+                        int.parse(pages[pages.indexWhere((element) => element['route'] == ModalRoute.of(context)!.settings.name)]['index']!),
         onTap: _onItemTapped,
+
       ),
     );
   }
@@ -78,10 +98,11 @@ class CommonLayout extends StatelessWidget {
   
 
   // Função para navegar entre as páginas
-  void _onItemTapped(int index) {
-    // Verifica se o índice da página atual é diferente do índice da página selecionada
-    if (pages[index]['route'] != ModalRoute.of(context)!.settings.name) {
-      Navigator.of(context).pushNamed(pages[index]['route']!);
+  void _onItemTapped(int newIndex) {
+
+    var currentIndex = pages.indexWhere((element) => element['route'] == ModalRoute.of(context)!.settings.name);
+    if (int.parse(pages[currentIndex]['index']!) != newIndex) {
+      Navigator.of(context).pushNamed(urls[newIndex]['route']!);
     }
   }
 }

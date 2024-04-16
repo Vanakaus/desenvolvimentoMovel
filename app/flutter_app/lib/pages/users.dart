@@ -99,7 +99,7 @@ class _MyHomeUserState extends State<MyUsersPage> {
           
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            print('Adicionar Aluno');
+            Navigator.of(context).pushNamed('/newUser');
           },
           tooltip: 'Adicionar Aluno',
           child: const Icon(Icons.add),

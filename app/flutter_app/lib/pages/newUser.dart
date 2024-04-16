@@ -126,10 +126,10 @@ class _newUserPageState extends State<newUserPage> {
 
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Navigator.of(context).pushNamed("/newActivity");
+            Navigator.of(context).pushNamed("/users");
           },
-          tooltip: 'Increment',
-          child: const Icon(Icons.refresh),
+          tooltip: 'Usuarios',
+          child: const Icon(Icons.group),
         ),
       ),
     );
