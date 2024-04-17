@@ -446,16 +446,25 @@ class _MyHomeUserState extends State<MyUsersPage> {
     final response = await http.get(Uri.parse('http://localhost:3000/userAtividades/listaUserAtividades?id_aluno=$id'));
 
     // Limpar a lista de atividades e adicionar as atividades da API
-    atividadesEntregues = [];
-    json.decode(response.body).forEach((element) {
+    if (response.body == '[]') {
 
-      atividadesEntregues.add({
-        "titulo": element["atividade"]["titulo"],
-        "descricao": element["atividade"]["descricao"],
-        "data de entrega": element["dataEntrega"],
-        "nota": element["nota"] == '-1' ? "Não avaliado" : element["nota"].toString()
+      atividadesEntregues = [
+        {"titulo": "", "descricao": "", "data de entrega": "", "nota": ""}
+      ];
+
+    } else {
+      
+      atividadesEntregues = [];
+      json.decode(response.body).forEach((element) {
+
+        atividadesEntregues.add({
+          "titulo": element["atividade"]["titulo"],
+          "descricao": element["atividade"]["descricao"],
+          "data de entrega": element["dataEntrega"],
+          "nota": element["nota"] == '-1' ? "Não avaliado" : element["nota"].toString()
+        });
       });
-    });
+    }
 
 
     // Atualizar a variável atividades

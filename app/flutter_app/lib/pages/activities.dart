@@ -11,10 +11,10 @@ class MyActivitiesPage extends StatefulWidget {
   final String title;
 
   @override
-  State<MyActivitiesPage> createState() => _MyHomeUserState();
+  State<MyActivitiesPage> createState() => _MyHomeAtividadesState();
 }
 
-class _MyHomeUserState extends State<MyActivitiesPage> {
+class _MyHomeAtividadesState extends State<MyActivitiesPage> {
   
   // Lista de usuários fictícia
   List<Map<String, String>> atividades = [
@@ -29,7 +29,7 @@ class _MyHomeUserState extends State<MyActivitiesPage> {
 
   // Lista de atividades nao enviadas
   List<Map<String, String>> atividadesEntregues = [
-    {"titulo": "", "descricao": "", "data de entrega": "", "nota": ""}
+    {"id": "", "Aluno": "", "email": "", "dataEntrega": "", "nota": ""}
   ];
 
 
@@ -88,14 +88,7 @@ class _MyHomeUserState extends State<MyActivitiesPage> {
                           icon: const Icon(Icons.list_alt),
                           tooltip: 'Atividaddes entregues',
                           onPressed: () {
-                            getAtividadesEnviadas(context, item["RA"]!);
-                          },
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.send),
-                          tooltip: 'Enviar Atividade',
-                          onPressed: () {
-                            getAtividadesNaoEnviadas(context, item["RA"]!);
+                            getAtividadesEntregues(context, item["id"]!);
                           },
                         ),
                         IconButton(
@@ -229,64 +222,6 @@ class _MyHomeUserState extends State<MyActivitiesPage> {
     );
   }
 
-
-
-  // Função para abrir o pop-up de envio de atividade
-  void _showEnviaAtividadeDialog(BuildContext context, int id) {
-    _selectedValue = atividadesNaoEntregues[0]['id']!;
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Selecione uma opção'),
-          content: StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-              return DropdownButton<String>(
-                value: _selectedValue,
-                onChanged: (String? value) {
-                  setState(() {
-                    _selectedValue = value!;
-                  });
-                },
-                items: atividadesNaoEntregues.map((item) {
-                  return DropdownMenuItem<String>(
-                    value: item['id']!,
-                    child: Text(item['titulo']!),
-                  );
-                }).toList(),
-              );
-            },
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                // Fechar o pop-up
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancelar'),
-            ),
-            TextButton(
-              onPressed: () {
-                int selectedIndex = atividadesNaoEntregues.indexWhere((element) => element['id'] == _selectedValue);
-
-                if (selectedIndex != 0) {
-                  entregaAtividade(id, int.parse(atividadesNaoEntregues[selectedIndex]['id']!));
-                  Navigator.of(context).pop();
-                }else{
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Selecione uma atividade'),
-                      duration: Duration(seconds: 4),
-                    ),
-                  );}
-              },
-              child: const Text('Selecionar'),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
 
 
@@ -441,24 +376,34 @@ class _MyHomeUserState extends State<MyActivitiesPage> {
 
 
   // Função para pegar as atividades não enviadas 
-  void getAtividadesEnviadas(BuildContext context, String item) async {
+  void getAtividadesEntregues(BuildContext context, String item) async {
 
     final id = int.parse(item);
 
     // Enviar requisição para a API com query string
-    final response = await http.get(Uri.parse('http://localhost:3000/userAtividades/listaUserAtividades?id_aluno=$id'));
+    final response = await http.get(Uri.parse('http://localhost:3000/userAtividades/listaAtividades?id_atividade=$id'));
 
     // Limpar a lista de atividades e adicionar as atividades da API
-    atividadesEntregues = [];
-    json.decode(response.body).forEach((element) {
+    if (response.body == "[]") {
 
-      atividadesEntregues.add({
-        "titulo": element["atividade"]["titulo"],
-        "descricao": element["atividade"]["descricao"],
-        "data de entrega": element["dataEntrega"],
-        "nota": element["nota"] == '-1' ? "Não avaliado" : element["nota"].toString()
+     atividadesEntregues = [
+      {"id": "", "Aluno": "", "email": "", "dataEntrega": "", "nota": ""}
+    ];
+
+    } else {
+      
+      atividadesEntregues = [];
+      json.decode(response.body).forEach((element) {
+
+        atividadesEntregues.add({
+          "id": element["id"].toString(),
+          "aluno": element["autor"]["name"],
+          "email": element["autor"]["email"],
+          "dataEntrega": element["dataEntrega"],
+          "nota": element["nota"] == '-1' ? "Não avaliado" : element["nota"].toString()
+        });
       });
-    });
+    }
 
 
     // Atualizar a variável atividades
@@ -469,63 +414,9 @@ class _MyHomeUserState extends State<MyActivitiesPage> {
     // Chamar a função para abrir o pop-up de envio de atividade
     _showEntregasDialog(context);
   }
-
-
-
-  // Função para pegar as atividades não enviadas 
-  void getAtividadesNaoEnviadas(BuildContext context, String item) async {
-
-    final id = int.parse(item);
-
-    // Enviar requisição para a API com query string
-    final response = await http.get(Uri.parse('http://localhost:3000/userAtividades/listaAtividadesNaoEntregues?id_aluno=$id'));
-
-    // Limpar a lista de atividades e adicionar as atividades da API
-    atividadesNaoEntregues = [
-      {"id": "", "titulo": ""}
-    ];
-    json.decode(response.body).forEach((element) {
-      atividadesNaoEntregues.add({
-        "id": element["id"].toString(),
-        "titulo": element["titulo"]
-      });
-    });
-
-    // Atualizar a variável atividades
-    setState(() {
-      atividadesNaoEntregues;
-    });
-
-    // Chamar a função para abrir o pop-up de envio de atividade
-    _showEnviaAtividadeDialog(context, id);
-  }
   
 
-
-  // Função para entregar uma atividade
-  void entregaAtividade(int idAluno, int idAtividade) {
-
-    // Enviar requisição para a API com json
-    http.post(Uri.parse('http://localhost:3000/userAtividades/entrega'),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    // converter o item para int
-    body: json.encode({
-      "id_aluno": idAluno,
-      "id_atividade": idAtividade
-    }));
-
-
-    // Mostrar mensagem de retorno como um alerta
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Atividade entregue com sucesso'),
-        duration: Duration(seconds: 4),
-      ),
-    );
-  }
-  
+  // Função para selecionar a data  
 Future<void> selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
