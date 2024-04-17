@@ -30,7 +30,7 @@ class CommonLayout extends StatelessWidget {
     {'index': '0', 'route': '/newUser'},
 
     // Paginas de atividades
-    // {'index': '1', 'route': '/activitys'},
+    {'index': '1', 'route': '/activities'},
     {'index': '1', 'route': '/newActivity'},
   ];
 
@@ -38,7 +38,7 @@ class CommonLayout extends StatelessWidget {
 // Lista de navegacao
   final List<Map<String, String>> urls = [
     {'title': 'Alunos', 'route': '/users'},
-    {'title': 'Atividades', 'route': '/newActivity'},
+    {'title': 'Atividades', 'route': '/activities'},
   ];
 
 

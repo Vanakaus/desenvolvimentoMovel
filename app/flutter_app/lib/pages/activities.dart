@@ -5,20 +5,20 @@ import 'package:flutter_app/layout/index.dart';
 import 'package:http/http.dart' as http;
 
 
-class MyUsersPage extends StatefulWidget {
-  const MyUsersPage({super.key, required this.title});
+class MyActivitiesPage extends StatefulWidget {
+  const MyActivitiesPage({super.key, required this.title});
 
   final String title;
 
   @override
-  State<MyUsersPage> createState() => _MyHomeUserState();
+  State<MyActivitiesPage> createState() => _MyHomeUserState();
 }
 
-class _MyHomeUserState extends State<MyUsersPage> {
+class _MyHomeUserState extends State<MyActivitiesPage> {
   
   // Lista de usuários fictícia
-  List<Map<String, String>> users = [
-    {"RA": "", "nome": "", "email": ""},
+  List<Map<String, String>> atividades = [
+    {"id": "", "Titulo": "", "descricao": "", "data de entrega": ""},
   ];
 
   // Lista de atividades nao enviadas
@@ -57,7 +57,7 @@ class _MyHomeUserState extends State<MyUsersPage> {
             child: Column(
               children: [
                 const Text(
-                  "Lista de Usuários",
+                  "Lista de Atividades",
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold
@@ -71,11 +71,11 @@ class _MyHomeUserState extends State<MyUsersPage> {
                 fontFamily: 'Inter',
               ),
               columns: [
-                ...users.first.keys
+                ...atividades.first.keys
                 .map((key) => DataColumn(label: Text(key.toUpperCase()))),
                 const DataColumn(label: Text('Ações'))
               ],
-                rows: users.map((item) => DataRow(
+                rows: atividades.map((item) => DataRow(
                 cells: [
                   ...item.keys
                   .map((key) => DataCell(Text(item[key].toString())))
@@ -124,9 +124,9 @@ class _MyHomeUserState extends State<MyUsersPage> {
           
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Navigator.of(context).pushNamed('/newUser');
+            Navigator.of(context).pushNamed('/newActivity');
           },
-          tooltip: 'Adicionar Aluno',
+          tooltip: 'Nova Atividade',
           child: const Icon(Icons.add),
         ),
       )
@@ -138,7 +138,7 @@ class _MyHomeUserState extends State<MyUsersPage> {
   @override
   void initState() {
     super.initState();
-    getUsers();
+    getAtividades();
   }
 
 
@@ -341,20 +341,22 @@ class _MyHomeUserState extends State<MyUsersPage> {
 
 
   // Função para pegar os usuários da API
-  Future<void> getUsers() async {
-    final response = await http.get(Uri.parse('http://localhost:3000/users/lista'));
+  Future<void> getAtividades() async {
+    final response = await http.get(Uri.parse('http://localhost:3000/atividades/lista'));
+    print(response.body);
 
-    users = [];
+    atividades = [];
     json.decode(response.body).forEach((element) {
-      users.add({
-        "RA": element["id"].toString(),
-        "nome": element["name"],
-        "email": element["email"]
+      atividades.add({
+        "id": element["id"].toString(),
+        "titulo": element["titulo"],
+        "descricao": element["descricao"],
+        "data de entrega": element["dataLimite"]
       });
     });
 
     setState(() {
-      users;
+      atividades;
     });
   }
 
@@ -394,7 +396,7 @@ class _MyHomeUserState extends State<MyUsersPage> {
     );
 
     // Atualizar a lista de usuários
-    getUsers();
+    getAtividades();
   }
 
   
@@ -432,7 +434,7 @@ class _MyHomeUserState extends State<MyUsersPage> {
     );
 
     // Atualizar a lista de usuários
-    getUsers();
+    getAtividades();
   }
 
 

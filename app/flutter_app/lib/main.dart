@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/pages/activities.dart';
 import 'package:flutter_app/pages/homePage.dart';
 import 'package:flutter_app/pages/newActivity.dart';
 import 'package:flutter_app/pages/newUser.dart';
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
         '/homePage': (context) => const MyHomePage(title: 'Home Page'),
         '/users': (context) => const MyUsersPage(title: 'Usuários'),
         '/newUser': (context) => const newUserPage(title: 'Novo Usuário'),
+        '/activities': (context) => const MyActivitiesPage(title: 'Atividades'),
         '/newActivity': (context) => const newActivityPage(title: 'Nova Atividade'),
       },
     );

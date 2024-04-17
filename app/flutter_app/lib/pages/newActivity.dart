@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app/layout/index.dart';
+import 'package:http/http.dart' as http;
 
 
 class newActivityPage extends StatefulWidget {
@@ -102,11 +105,8 @@ class _newActivityPageState extends State<newActivityPage> {
                     onPressed: () {
                       if (formKeyActivity.currentState!.validate()) {
                         formKeyActivity.currentState!.save();
-                        // Here you can add the new activity to your list or perform other actions
-                        // For now, let's just print the data
-                        print('Activity Name: $activityName');
-                        print('Activity Description: $activityDescription');
-                        print('Activity Deadline: $activityDeadline');
+
+                        createActivity(activityName, activityDescription, activityDeadline);
                       }
                     },
                     child: const Text('Criar Atividade'),
@@ -120,12 +120,53 @@ class _newActivityPageState extends State<newActivityPage> {
 
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).pushNamed("/users");
+          Navigator.of(context).pushNamed("/activities");
         },
-        tooltip: 'Increment',
-        child: const Icon(Icons.refresh),
+        tooltip: 'Atividades',
+        child: const Icon(Icons.list_alt),
       ),
       )
+    );
+  }
+
+
+
+
+  // Função para criar uma nova atividade
+  Future<void> createActivity(String activityName, String activityDescription, DateTime activityDeadline) async {
+    print('Atividade criada com sucesso!');
+    print('Nome: $activityName');
+    print('Descrição: $activityDescription');
+    print('Data de Entrega: ${activityDeadline.day}/${activityDeadline.month}/${activityDeadline.year}');
+
+
+    // Enviar requisição para a API
+    final response = await http.post(Uri.parse('http://localhost:3000/atividades/cria'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    // converter o item para int
+    body: json.encode({
+      "titulo": activityName,
+      "descricao": activityDescription,
+      "dataLimite": activityDeadline.toIso8601String()
+    }));
+
+    // Criar a mensagem de retorno
+    var mensagem = '';
+
+    if (response.statusCode == 400) {
+      mensagem = 'Erro Interno';
+    } else {
+      mensagem = 'Atividade criada com sucesso!';
+    }
+
+    // Mostrar mensagem de retorno como um alerta
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(mensagem),
+        duration: const Duration(seconds: 4),
+      ),
     );
   }
 }
