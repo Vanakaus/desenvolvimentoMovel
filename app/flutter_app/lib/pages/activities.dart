@@ -106,9 +106,9 @@ class _MyHomeUserState extends State<MyActivitiesPage> {
                         ),
                         IconButton(
                           icon: const Icon(Icons.delete),
-                          tooltip: 'Excluir Usuário',
+                          tooltip: 'Excluir Atividade',
                           onPressed: () {
-                            excluirUser(item["RA"]!);
+                            excluirAtividade(item["id"]!);
                           },
                         ),
                       ],
@@ -343,7 +343,6 @@ class _MyHomeUserState extends State<MyActivitiesPage> {
   // Função para pegar os usuários da API
   Future<void> getAtividades() async {
     final response = await http.get(Uri.parse('http://localhost:3000/atividades/lista'));
-    print(response.body);
 
     atividades = [];
     json.decode(response.body).forEach((element) {
@@ -402,12 +401,12 @@ class _MyHomeUserState extends State<MyActivitiesPage> {
   
 
   // Função para excluir um usuário
-  Future<void> excluirUser(String item) async {
+  Future<void> excluirAtividade(String item) async {
 
     final id = int.parse(item);
 
     // Enviar requisição para a API com json
-    final response = await http.delete(Uri.parse('http://localhost:3000/users/deleta'),
+    final response = await http.delete(Uri.parse('http://localhost:3000/atividades/deleta'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
@@ -422,7 +421,7 @@ class _MyHomeUserState extends State<MyActivitiesPage> {
     if (response.statusCode == 400) {
       mensagem = 'Erro Interno';
     } else {
-      mensagem = 'Usuário excluído com sucesso';
+      mensagem = 'Atividade excluída com sucesso';
     }
 
     // Mostrar mensagem de retorno como um alerta

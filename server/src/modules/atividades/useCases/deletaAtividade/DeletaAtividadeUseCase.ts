@@ -15,7 +15,6 @@ export class DeletaAtividadeUseCase{
 
 
         if(!atividade){
-            console.log("Atividade não encontrada");
             throw new AppError('Atividade não encontrada', 404);
         }
 
