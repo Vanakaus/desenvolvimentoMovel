@@ -78,8 +78,7 @@ class _MyHomeUserState extends State<MyUsersPage> {
                 rows: users.map((item) => DataRow(
                 cells: [
                   ...item.keys
-                  .map((key) => DataCell(Text(item[key].toString())))
-                  ,
+                  .map((key) => DataCell(Text(item[key].toString()))),
                   DataCell(
                     Row(
                       children: [

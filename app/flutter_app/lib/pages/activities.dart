@@ -25,7 +25,7 @@ class _MyHomeAtividadesState extends State<MyActivitiesPage> {
   List<Map<String, String>> atividadesNaoEntregues = [
     {"id": "", "titulo": ""}
   ];
-  String _selectedValue = '';
+
 
   // Lista de atividades nao enviadas
   List<Map<String, String>> atividadesEntregues = [
@@ -33,9 +33,15 @@ class _MyHomeAtividadesState extends State<MyActivitiesPage> {
   ];
 
 
+  // Usuaŕio selecionado
+  String selectedUser = '';
 
+
+  // Chave do formulário
   final _formKey = GlobalKey<FormState>();
   late DateTime dataEntrega = DateTime.now().add(const Duration(days: 7));
+
+
 
 
   // Build da página
@@ -86,8 +92,9 @@ class _MyHomeAtividadesState extends State<MyActivitiesPage> {
                       children: [
                         IconButton(
                           icon: const Icon(Icons.list_alt),
-                          tooltip: 'Atividaddes entregues',
+                          tooltip: 'Atividades entregues',
                           onPressed: () {
+                            selectedUser = item["id"]!;
                             getAtividadesEntregues(context, item["id"]!);
                           },
                         ),
@@ -245,12 +252,26 @@ class _MyHomeAtividadesState extends State<MyActivitiesPage> {
               ),
               columns: [
                 ...atividadesEntregues.first.keys
-                .map((key) => DataColumn(label: Text(key.toUpperCase())))
+                .map((key) => DataColumn(label: Text(key.toUpperCase()))),
+                const DataColumn(label: Text('AÇÕES'))
               ],
                 rows: atividadesEntregues.map((item) => DataRow(
                 cells: [
                   ...item.keys
-                  .map((key) => DataCell(Text(item[key].toString())))
+                  .map((key) => DataCell(Text(item[key].toString()))),
+                  DataCell(
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.edit),
+                          tooltip: 'Avaliar Atividade',
+                          onPressed: () {
+                            _showAvaliaAtividadeDialog(context, item["id"]!, item["nota"] == "Não avaliado" ? 0 : int.parse(item["nota"]!));
+                          },
+                        ),
+                      ],
+                    ),
+                  )
                   ,
                 ],
               )).toList(),
@@ -269,6 +290,63 @@ class _MyHomeAtividadesState extends State<MyActivitiesPage> {
               child: const Text('Fechar'),
             ),
           ],
+        );
+      },
+    );
+  }
+
+
+
+  // Função para abrir o pop-up de avaliação de atividade
+  void _showAvaliaAtividadeDialog(BuildContext context, String item, int nota) {
+    final TextEditingController notaController = TextEditingController();
+    notaController.text = nota.toString();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Avaliar Atividade'),
+          content: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: notaController,
+                  decoration: const InputDecoration(labelText: 'Nota'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Escreva uma nota';
+                    }
+                    return null;
+                  },
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        // Fechar o pop-up
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Cancelar'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          avaliarAtividade(item, notaController.text);
+                          // Fechar o pop-up
+                          Navigator.of(context).pop();
+                        }
+                      },
+                      child: const Text('Avaliar'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         );
       },
     );
@@ -391,7 +469,7 @@ class _MyHomeAtividadesState extends State<MyActivitiesPage> {
     ];
 
     } else {
-      
+
       atividadesEntregues = [];
       json.decode(response.body).forEach((element) {
 
@@ -416,6 +494,51 @@ class _MyHomeAtividadesState extends State<MyActivitiesPage> {
   }
   
 
+
+
+  // Função para avaliar uma atividade
+  Future<void> avaliarAtividade(String item, String valor) async {
+    final id = int.parse(item);
+    final nota = int.parse(valor);
+
+    // Enviar requisição para a API com json
+    final response = await http.patch(Uri.parse('http://localhost:3000/userAtividades/atualizaNota'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: json.encode({
+      "id": id,
+      "nota": nota
+    }));
+
+
+    // Criar a mensagem de retorno
+    var mensagem = '';
+
+    if (response.statusCode == 400) {
+      mensagem = 'Erro Interno';
+    } else {
+      mensagem = 'Atividade avaliada com sucesso';
+    }
+
+
+    // Mostrar mensagem de retorno como um alerta
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(mensagem),
+        duration: const Duration(seconds: 4),
+      ),
+    );
+
+    // Atualizar a lista de usuários
+    Navigator.of(context).pop();
+    getAtividadesEntregues(context, selectedUser);
+  }
+
+
+
+
+
   // Função para selecionar a data  
 Future<void> selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -429,5 +552,5 @@ Future<void> selectDate(BuildContext context) async {
         dataEntrega = pickedDate;
       });
     }
-  }
+  }  
 }
