@@ -35,6 +35,7 @@ class _MyHomeUserState extends State<MyActivitiesPage> {
 
 
   final _formKey = GlobalKey<FormState>();
+  late DateTime dataEntrega = DateTime.now().add(const Duration(days: 7));
 
 
   // Build da página
@@ -101,7 +102,7 @@ class _MyHomeUserState extends State<MyActivitiesPage> {
                           icon: const Icon(Icons.edit),
                           tooltip: 'Editar Usuário',
                           onPressed: () {
-                            _showAddUserDialog(context, item["RA"]!, item["email"]!);
+                            _showEditAtividadeDialog(context, item["id"]!, item["titulo"]!, item["descricao"]!, DateTime.parse(item["data de entrega"]!));
                           },
                         ),
                         IconButton(
@@ -143,60 +144,59 @@ class _MyHomeUserState extends State<MyActivitiesPage> {
 
 
 // Função para abrir o pop-up de atualização de usuário
-  void _showAddUserDialog(BuildContext context, String id, String email) {
-    final TextEditingController emailController = TextEditingController();
-    final TextEditingController passwordController = TextEditingController();
-    final TextEditingController confirmPasswordController =
+  void _showEditAtividadeDialog(BuildContext context, String id, String titulo, String descricao, DateTime data) {
+    final TextEditingController tituloController = TextEditingController();
+    final TextEditingController descricaoController = TextEditingController();
         TextEditingController();
 
-    emailController.text = email;
+    tituloController.text = titulo;
+    descricaoController.text = descricao;
+    dataEntrega = data;
 
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Editar Usuário'),
+          title: const Text('Editar Atividade'),
           content: Form(
             key: _formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextFormField(
-                  controller: emailController,
-                  decoration: const InputDecoration(labelText: 'E-mail'),
+                  controller: tituloController,
+                  decoration: const InputDecoration(labelText: 'Titulo'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Escreva seu email';
+                      return 'Escreva um titulo';
                     }
                     return null;
                   },
                 ),
                 TextFormField(
-                  controller: passwordController,
-                  obscureText: true,
-                  decoration: const InputDecoration(labelText: 'Senha'),
+                  controller: descricaoController,
+                  decoration: const InputDecoration(labelText: 'Descrição'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Cria uma senha';
+                      return 'Escreva uma descrição';
                     }
                     return null;
                   },
                 ),
-                TextFormField(
-                  controller: confirmPasswordController,
-                  obscureText: true,
-                  decoration: const InputDecoration(labelText: 'Confirmar Senha'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Confirme sua senha';
-                    }
-                    if (value != passwordController.text) {
-                      return 'As senhas não são iguais';
-                    }
-                    return null;
-                  },
-                ),
+                const SizedBox(height: 10),
+                Row(
+                    children: [
+                      const Text('Data de Entrega:'),
+                      const SizedBox(width: 10),
+                      TextButton(
+                        onPressed: () => selectDate(context),
+                        child: Text(
+                          '${dataEntrega.day}/${dataEntrega.month}/${dataEntrega.year}',
+                        ),
+                      ),
+                    ],
+                  ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -210,10 +210,11 @@ class _MyHomeUserState extends State<MyActivitiesPage> {
                     TextButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          editarUser(id,
-                                    emailController.text,
-                                    passwordController.text,
-                                    confirmPasswordController.text);
+                          editarAtividade(id,
+                                          tituloController.text,
+                                          descricaoController.text,
+                                          dataEntrega);
+                                    
                           // Fechar o pop-up
                           Navigator.of(context).pop();
                       }},
@@ -361,20 +362,21 @@ class _MyHomeUserState extends State<MyActivitiesPage> {
 
 
   // Função para editar um usuário
-  Future<void> editarUser(String item, String email, String password, String confirmPassword) async {
+  Future<void> editarAtividade(String item, String titulo, String descricao, DateTime data) async {
 
     final id = int.parse(item);
 
     // Enviar requisição para a API com json
-    final response = await http.patch(Uri.parse('http://localhost:3000/users/atualiza'),
+    final response = await http.patch(Uri.parse('http://localhost:3000/atividades/atualiza'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
     // converter o item para int
     body: json.encode({
       "id": id,
-      "email": email,
-      "senha": password
+      "titulo": titulo,
+      "descricao": descricao,
+      "dataLimite": data.toIso8601String()
     }));
 
     // Criar a mensagem de retorno
@@ -383,7 +385,7 @@ class _MyHomeUserState extends State<MyActivitiesPage> {
     if (response.statusCode == 400) {
       mensagem = 'Erro Interno';
     } else {
-      mensagem = 'Usuário atualizado com sucesso';
+      mensagem = 'Atividade atualizada com sucesso';
     }
 
     // Mostrar mensagem de retorno como um alerta
@@ -522,5 +524,19 @@ class _MyHomeUserState extends State<MyActivitiesPage> {
         duration: Duration(seconds: 4),
       ),
     );
+  }
+  
+Future<void> selectDate(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: dataEntrega,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+    if (pickedDate != null && pickedDate != dataEntrega) {
+      setState(() {
+        dataEntrega = pickedDate;
+      });
+    }
   }
 }
