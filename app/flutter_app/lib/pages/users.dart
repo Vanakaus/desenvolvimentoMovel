@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/layout/index.dart';
 import 'package:http/http.dart' as http;
+import 'package:localstorage/localstorage.dart';
 
 
 class MyUsersPage extends StatefulWidget {
@@ -361,12 +362,17 @@ class _MyHomeUserState extends State<MyUsersPage> {
   // Função para editar um usuário
   Future<void> editarUser(String item, String email, String password, String confirmPassword) async {
 
+    WidgetsFlutterBinding.ensureInitialized();
+    await initLocalStorage();
+
     final id = int.parse(item);
 
     // Enviar requisição para a API com json
     final response = await http.patch(Uri.parse('http://localhost:3000/users/atualiza'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
+      'x-access-id': localStorage.getItem("id").toString(),
+      'x-access-email': localStorage.getItem("email").toString()
     },
     // converter o item para int
     body: json.encode({
@@ -378,7 +384,9 @@ class _MyHomeUserState extends State<MyUsersPage> {
     // Criar a mensagem de retorno
     var mensagem = '';
 
-    if (response.statusCode == 400) {
+    if (response.statusCode == 401) {
+      mensagem = 'Acesso Não Autorizado';
+    } else if(response.statusCode != 201){
       mensagem = 'Erro Interno';
     } else {
       mensagem = 'Usuário atualizado com sucesso';
@@ -401,12 +409,17 @@ class _MyHomeUserState extends State<MyUsersPage> {
   // Função para excluir um usuário
   Future<void> excluirUser(String item) async {
 
+    WidgetsFlutterBinding.ensureInitialized();
+    await initLocalStorage();
+
     final id = int.parse(item);
 
     // Enviar requisição para a API com json
     final response = await http.delete(Uri.parse('http://localhost:3000/users/deleta'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
+      'x-access-id': localStorage.getItem("id").toString(),
+      'x-access-email': localStorage.getItem("email").toString()
     },
     // converter o item para int
     body: json.encode({
@@ -416,7 +429,9 @@ class _MyHomeUserState extends State<MyUsersPage> {
     // Criar a mensagem de retorno
     var mensagem = '';
 
-    if (response.statusCode == 400) {
+    if (response.statusCode == 401) {
+      mensagem = 'Acesso Não Autorizado';
+    } else if(response.statusCode != 201){
       mensagem = 'Erro Interno';
     } else {
       mensagem = 'Usuário excluído com sucesso';

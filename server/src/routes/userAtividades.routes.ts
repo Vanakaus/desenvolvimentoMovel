@@ -5,6 +5,7 @@ import { ListaAtividadesController, ListaUserAtividadeController, ListaUserAtivi
 import { AtualizaAtividadeEntregaController, AtualizaAtividadeNotaController } from "../modules/userAtividades/useCases/atualizaUserAtividade/AtualizaUserAtividadeController";
 import { DeletaUserAtividadeController } from "../modules/userAtividades/useCases/deletaAtividade/DeletaAtividadeController";
 import { autenticacao } from "../middlewares/autenticacao";
+import { autenticacaoAtividade } from "../middlewares/autenticacaoAtividades";
 
 
 
@@ -23,8 +24,8 @@ userAtividadeRoutes.post('/entrega', informativo, autenticacao, criaUserAtividad
 userAtividadeRoutes.get('/listaUserAtividades', informativo, listaUserAtividadeController.handle);
 userAtividadeRoutes.get('/listaAtividades', informativo, listaAtividadesController.handle);
 userAtividadeRoutes.get('/listaAtividadesNaoEntregues', informativo, listaUserAtividadeNaoEntregueController.handle);
-userAtividadeRoutes.patch('/atualizaEntrega', informativo, autenticacao, atualizaAtividadeEntregaController.handle);
-userAtividadeRoutes.patch('/atualizaNota', informativo, autenticacao, atualizaAtividadeNotaController.handle);
+userAtividadeRoutes.patch('/atualizaEntrega', informativo, atualizaAtividadeEntregaController.handle);
+userAtividadeRoutes.patch('/atualizaNota', informativo, atualizaAtividadeNotaController.handle);
 userAtividadeRoutes.delete('/deleta', informativo, deletaUserAtividadeController.handle);
 
 
