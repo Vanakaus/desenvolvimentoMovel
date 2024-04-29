@@ -4,6 +4,7 @@ import { CriaUserAtividadeController } from "../modules/userAtividades/useCases/
 import { ListaAtividadesController, ListaUserAtividadeController, ListaUserAtividadeNaoEntregueController } from "../modules/userAtividades/useCases/listaUserAtividade/ListaUserAtividadeController";
 import { AtualizaAtividadeEntregaController, AtualizaAtividadeNotaController } from "../modules/userAtividades/useCases/atualizaUserAtividade/AtualizaUserAtividadeController";
 import { DeletaUserAtividadeController } from "../modules/userAtividades/useCases/deletaAtividade/DeletaAtividadeController";
+import { autenticacao } from "../middlewares/autenticacao";
 
 
 
@@ -18,12 +19,12 @@ const userAtividadeRoutes = Router();
 
 
 // Rotas de atividades do usuário
-userAtividadeRoutes.post('/entrega', informativo, criaUserAtividadeController.handle);
+userAtividadeRoutes.post('/entrega', informativo, autenticacao, criaUserAtividadeController.handle);
 userAtividadeRoutes.get('/listaUserAtividades', informativo, listaUserAtividadeController.handle);
 userAtividadeRoutes.get('/listaAtividades', informativo, listaAtividadesController.handle);
 userAtividadeRoutes.get('/listaAtividadesNaoEntregues', informativo, listaUserAtividadeNaoEntregueController.handle);
-userAtividadeRoutes.patch('/atualizaEntrega', informativo, atualizaAtividadeEntregaController.handle);
-userAtividadeRoutes.patch('/atualizaNota', informativo, atualizaAtividadeNotaController.handle);
+userAtividadeRoutes.patch('/atualizaEntrega', informativo, autenticacao, atualizaAtividadeEntregaController.handle);
+userAtividadeRoutes.patch('/atualizaNota', informativo, autenticacao, atualizaAtividadeNotaController.handle);
 userAtividadeRoutes.delete('/deleta', informativo, deletaUserAtividadeController.handle);
 
 

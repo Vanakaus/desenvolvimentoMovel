@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/layout/index.dart';
 import 'package:http/http.dart' as http;
+import 'package:localstorage/localstorage.dart';
 
 
 class MyHomePage extends StatefulWidget {
@@ -142,7 +143,19 @@ class _MyHomePageState extends State<MyHomePage> {
     if (response.statusCode == 400) {
       mensagem = 'Erro Interno';
     } else {
-      mensagem = 'Login realizado com sucesso!';
+      
+      WidgetsFlutterBinding.ensureInitialized();
+      await initLocalStorage();
+
+      Map<String, dynamic> userData = json.decode(response.body);
+      var user = userData["name"];
+
+
+      localStorage.setItem('id', userData["id"].toString());
+      localStorage.setItem('name', userData["name"]);
+
+
+      mensagem = 'Login realizado com sucesso! \nBem-Vindo $user';
       Navigator.of(context).pushNamed("/users");      
     }
 
