@@ -1,5 +1,9 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app/layout/index.dart';
+import 'package:http/http.dart' as http;
 
 
 class MyHomePage extends StatefulWidget {
@@ -25,47 +29,129 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return CommonLayout(
-      pageTitle: widget.title,
-      context: context,
-      body: const Scaffold(
-        body: Center(
-          // Center is a layout widget. It takes a single child and positions it
-          // in the middle of the parent.
-          child: Column(
-            // Column is also a layout widget. It takes a list of children and
-            // arranges them vertically. By default, it sizes itself to fit its
-            // children horizontally, and tries to be as tall as its parent.
-            //
-            // Column has various properties to control how it sizes itself and
-            // how it positions its children. Here we use mainAxisAlignment to
-            // center the children vertically; the main axis here is the vertical
-            // axis because Columns are vertical (the cross axis would be
-            // horizontal).
-            //
-            // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-            // action in the IDE, or press "p" in the console), to see the
-            // wireframe for each widget.
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                'Pagina Inicial',
-                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-              ),
-              Text(
-                'Use a barra inferior para navegar entre as páginas',
-                style: TextStyle(fontSize: 18),
-              ),
-            ],
-          ),
+
+    final formKeyActivity = GlobalKey<FormState>();
+    late String email;
+    late String senha;
+    
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text(
+          "Pagina Inicial",
+          style: TextStyle(
+            fontSize: 36,
+            fontWeight: FontWeight.bold,
+          )
         ),
-        )
+        centerTitle: true,
+        automaticallyImplyLeading: false
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+
+            Container(
+              padding: const EdgeInsets.all(30.0),
+              width: 600,
+              height: 400,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0), color: Colors.white),
+                child: Form(
+                  key: formKeyActivity,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+
+                      const Text(
+                          "Login",
+                          style: TextStyle(fontSize: 20,
+                          fontWeight: FontWeight.bold)
+                        ),
+
+                        const Text(
+                          'Realize o login para continuar',
+                          style: TextStyle(fontSize: 18),
+                        ),
+
+                        TextFormField(
+                          decoration: const InputDecoration(labelText: 'Email'),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Escreva seu Email';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) => email = value!,
+                        ),
+  
+                  
+                        TextFormField(
+                          decoration: const InputDecoration(labelText: 'Senha'),
+                          obscureText: true,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Escreva sua senha';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) => senha = value!,
+                        ),
+                  
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: () {
+                            if (formKeyActivity.currentState!.validate()) {
+                              formKeyActivity.currentState!.save();
+
+                              loginHandler(email, senha);
+
+                              print("asdasdasdasdasda");
+                            }
+                          },
+                          child: const Text('Logar'),
+                        ),
+                    ],
+                  ),
+                ),
+            ),
+          ],
+        ),
+      )
+    );
+  }
+  
+
+  Future<void> loginHandler(String email, String senha) async {
+
+    // Enviar requisição para a API
+    final response = await http.post(Uri.parse('http://localhost:3000/users/login'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    // converter o item para int
+    body: json.encode({
+      'email': email,
+      'senha': senha
+    }));
+
+    // Criar a mensagem de retorno
+    var mensagem = '';
+
+    if (response.statusCode == 400) {
+      mensagem = 'Erro Interno';
+    } else {
+      mensagem = 'Login realizado com sucesso!';
+      Navigator.of(context).pushNamed("/users");      
+    }
+
+    // Mostrar mensagem de retorno como um alerta
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(mensagem),
+        duration: const Duration(seconds: 4),
+      ),
     );
   }
 }
